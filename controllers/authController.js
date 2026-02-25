@@ -32,7 +32,7 @@ exports.forgotPassword = async (req, res) => {
 
         await user.save();
 
-        const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
+        const resetLink = `https://novavault-frontend.netlify.app/reset-password/${token}`;
 
         const msg = {
             to: user.email,
