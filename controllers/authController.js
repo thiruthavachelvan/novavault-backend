@@ -1,9 +1,7 @@
 const User = require("../models/User");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
-const sgMail = require("@sendgrid/mail");
-
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const sendEmail = require("../sendEmail");
 
 
 // FORGOT PASSWORD
@@ -34,18 +32,16 @@ exports.forgotPassword = async (req, res) => {
 
         const resetLink = `https://novavault-frontend.netlify.app/reset-password/${token}`;
 
-        const msg = {
-            to: user.email,
-            from: "thirukumar3210@gmail.com",
-            subject: "Password Reset",
-            html: `
+        await sendEmail(
+            user.email,
+            "Password Reset",
+            `Click the link to reset your password: ${resetLink}`,
+            `
         <h2>Password Reset Request</h2>
         <p>Click the link below to reset your password:</p>
         <a href="${resetLink}">${resetLink}</a>
     `
-        };
-
-        await sgMail.send(msg);
+        );
 
         res.json({
             message: "Password reset email sent successfully"
