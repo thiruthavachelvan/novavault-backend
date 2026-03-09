@@ -32,7 +32,8 @@ exports.forgotPassword = async (req, res) => {
 
         await user.save();
 
-        const resetLink = `https://novavault-frontend.netlify.app/reset-password/${token}`;
+        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+        const resetLink = `${frontendUrl}/reset-password/${token}`;
 
         const msg = {
             to: user.email,
@@ -61,10 +62,62 @@ exports.forgotPassword = async (req, res) => {
         });
 
     }
+};
 
+// VERIFY TOKEN
+exports.verifyToken = async (req, res) => {
+    try {
+        const { token } = req.params;
+
+        const user = await User.findOne({
+            resetToken: token,
+            resetTokenExpiry: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return res.status(400).json({
+                message: "Invalid or expired token"
+            });
+        }
+
+        res.json({ message: "Token is valid" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Server error" });
+    }
 };
 
 
+
+// LOGIN USER
+exports.login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Check user
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        // Check password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        res.json({
+            message: "Login successful",
+            user: {
+                id: user._id,
+                email: user.email
+            }
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
 
 // REGISTER USER
 exports.register = async (req, res) => {
