@@ -9,7 +9,8 @@ const app = express();
 app.use(cors({
   origin: [
     "https://novavault-frontend.netlify.app",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true

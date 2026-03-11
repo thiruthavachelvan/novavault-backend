@@ -1,0 +1,1 @@
+mongodb://thiru:thiru123@ac-6x87lru-shard-00-00.j0lqxpi.mongodb.net:27017,ac-6x87lru-shard-00-01.j0lqxpi.mongodb.net:27017,ac-6x87lru-shard-00-02.j0lqxpi.mongodb.net:27017/password-reset?ssl=true&replicaSet=atlas-13c58w-shard-0&authSource=admin&retryWrites=true&w=majority
